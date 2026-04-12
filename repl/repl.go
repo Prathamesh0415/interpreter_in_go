@@ -19,7 +19,7 @@ func Start(in io.Reader, out io.Writer) {
 		text := scanner.Text()
 		l := lexer.New(text)
 		for tok := l.NextToken(); tok.Type != token.EOF; tok = l.NextToken() {
-			fmt.Printf("{ Type: %s ; Literal: %s }\n", string(tok.Type), tok.Literal)
+			fmt.Printf("{ Type: %s :: Literal: %s }\n", string(tok.Type), tok.Literal)
 		}  
 	}
 

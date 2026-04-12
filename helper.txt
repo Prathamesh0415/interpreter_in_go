@@ -16,3 +16,11 @@ let result = add(five, ten);
     "literal value",
 }
 
+// We are going to write our own parser
+// The parser is going to be a recursive descent parser
+// --> Top Down Operator Precedency parser
+// --> Pratt parser
+
+// Expressions produce value (ex add(5, 5) or 5)
+// Statement dont produce values (ex return 6 or let x = 5)
+
