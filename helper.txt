@@ -1,0 +1,18 @@
+Building a lexical analyser first....
+
+// Source Code -->
+let five = 5;
+let ten = 10;
+let add = fn(x, y) {
+x + y;
+};
+let result = add(five, ten);
+
+// varaiable names --> "identifiers"
+// let, fn etc.... --> "keywords"
+
+// TOKEN data structure --> {
+    "type",
+    "literal value",
+}
+
