@@ -4,6 +4,7 @@ import (
 	"interpreter_go/lexer"
 	"interpreter_go/ast"
 	"testing"
+	"fmt"
 )
 
 func TestLetStatements(t *testing.T) {
@@ -14,6 +15,8 @@ func TestLetStatements(t *testing.T) {
 	p := New(l)
 
 	program := p.ParseProgram()
+	
+	checkParserErrors(t, p)
 
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")
@@ -61,4 +64,16 @@ func testLetStatements(t *testing.T, statement ast.Statement, expected string) b
 	return true
 
 
+}
+
+func checkParserErrors(t *testing.T, p *Parser) {
+	errors := p.errors
+	if len(errors) == 0 {
+		return
+	}
+	fmt.Printf("Parser has %d errors \n", len(errors))
+	for _, error := range errors {
+		t.Errorf("parse Error: %q", error)
+	}
+	t.FailNow()
 }
