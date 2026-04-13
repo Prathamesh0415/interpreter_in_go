@@ -45,6 +45,8 @@ func New(lex *lexer.Lexer) *Parser {
 	parser.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 	parser.registerPrefix(token.IDENT, parser.parseIdentifier)
 	parser.registerPrefix(token.INT, parser.parseIntegerLiteral)
+	parser.registerPrefix(token.BANG, parser.parsePrefixExpression)
+	parser.registerPrefix(token.MINUS, parser.parsePrefixExpression)
 
 	return parser
 }
@@ -75,12 +77,8 @@ func (p *Parser) parseStatement() ast.Statement {
 			return p.parseLetStatement()
 		case token.RETURN:
 			return p.parseReturnStatement()
-		case token.IDENT:
-			return p.parseExpressionStatement()
-		case token.INT:
-			return p.parseExpressionStatement()
 		default:
-			return nil
+			return p.parseExpressionStatement()
 	}
 }
 
@@ -152,6 +150,19 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	return litt
 }
 
+func (p *Parser) parsePrefixExpression() ast.Expression {
+	stmt := &ast.PrefixExpression{
+		Token: p.currToken,
+		Operator: p.currToken.Literal,
+	}
+
+	p.nextToken()
+
+	stmt.Right = p.parseExpression(PREFIX)
+
+	return stmt
+}
+
 func (p *Parser) parseIdentifier() ast.Expression {
 	return &ast.Identifier{Token: p.currToken, Value: p.currToken.Literal}
 }
@@ -168,6 +179,11 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		p.peekError(t)
 		return false
 	}
+}
+
+func (p *Parser) noPrefixParseFnError(t token.TokenType) {
+	msg := fmt.Sprintf("no prefix parse function for %s found", t)
+	p.errors = append(p.errors, msg)
 }
 
 func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {

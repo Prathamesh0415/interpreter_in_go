@@ -45,6 +45,12 @@ type IntegerLiteral struct {
 	Value int64
 }
 
+type PrefixExpression struct {
+	Token token.Token
+	Operator string
+	Right Expression
+}
+
 type Identifier struct {
 	Token token.Token
 	Value string
@@ -99,6 +105,20 @@ func (i *Identifier) String() string { return i.Value }
 func (il *IntegerLiteral) expressionNode() {}
 func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
 func (il *IntegerLiteral) String() string { return il.Token.Literal }
+
+func (pe *PrefixExpression) expressionNode() {}
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
+func (pe *PrefixExpression) String() string {
+	var buff bytes.Buffer
+	
+	buff.WriteString("(")
+	buff.WriteString(pe.Operator)
+	buff.WriteString(pe.Right.String())
+	buff.WriteString(")")
+
+	return buff.String()
+}
+
 
 
 func (p *Program) String() string {
