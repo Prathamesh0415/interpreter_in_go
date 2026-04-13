@@ -4,6 +4,7 @@ import (
 	"interpreter_go/ast"
 	"interpreter_go/lexer"
 	"interpreter_go/token"
+	"strconv"
 	"fmt"
 )
 
@@ -43,6 +44,7 @@ func New(lex *lexer.Lexer) *Parser {
 
 	parser.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 	parser.registerPrefix(token.IDENT, parser.parseIdentifier)
+	parser.registerPrefix(token.INT, parser.parseIntegerLiteral)
 
 	return parser
 }
@@ -74,6 +76,8 @@ func (p *Parser) parseStatement() ast.Statement {
 		case token.RETURN:
 			return p.parseReturnStatement()
 		case token.IDENT:
+			return p.parseExpressionStatement()
+		case token.INT:
 			return p.parseExpressionStatement()
 		default:
 			return nil
@@ -132,6 +136,20 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	}
 	leftExp := prefix()
 	return leftExp
+}
+
+func (p *Parser) parseIntegerLiteral() ast.Expression {
+	litt := &ast.IntegerLiteral{Token: p.currToken}
+
+	val, err := strconv.ParseInt(p.currToken.Literal, 0, 64)
+	if err != nil {
+		msg := fmt.Sprintf("could not parse %q as integer", p.currToken.Literal)
+		p.errors = append(p.errors, msg)
+		return nil
+	}
+
+	litt.Value = val
+	return litt
 }
 
 func (p *Parser) parseIdentifier() ast.Expression {
