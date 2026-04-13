@@ -5,6 +5,7 @@ import (
 	"bytes"
 )
 
+
 type Node interface {
 	TokenLiteral() string
 	String() string
@@ -43,6 +44,13 @@ type ExpressionStatement struct {
 type IntegerLiteral struct {
 	Token token.Token
 	Value int64
+}
+
+type InfixExpression struct {
+	Token token.Token
+	Right Expression
+	Operator string
+	Left Expression
 }
 
 type PrefixExpression struct {
@@ -119,6 +127,19 @@ func (pe *PrefixExpression) String() string {
 	return buff.String()
 }
 
+func (ie *InfixExpression) expressionNode() {}
+func (ie *InfixExpression) TokenLiteral() string { return ie.Token.Literal }
+func (ie *InfixExpression) String() string {
+	var buff bytes.Buffer
+	
+	buff.WriteString("(")
+	buff.WriteString(ie.Left.String())
+	buff.WriteString(" " + ie.Operator + " ")
+	buff.WriteString(ie.Right.String())
+	buff.WriteString(")")
+
+	return buff.String()
+}
 
 
 func (p *Program) String() string {
