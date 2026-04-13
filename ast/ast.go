@@ -59,6 +59,11 @@ type PrefixExpression struct {
 	Right Expression
 }
 
+type Boolean struct {
+	Token token.Token
+	Value bool
+}
+
 type Identifier struct {
 	Token token.Token
 	Value string
@@ -141,6 +146,9 @@ func (ie *InfixExpression) String() string {
 	return buff.String()
 }
 
+func (b *Boolean) expressionNode() {}
+func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
+func (b *Boolean) String() string { return b.Token.Literal }
 
 func (p *Program) String() string {
 	var buff bytes.Buffer
