@@ -182,7 +182,7 @@ func (ife *IfExpression) String() string {
 	buff.WriteString(ife.Consequence.String())
 	
 	if ife.Alternative != nil {
-		buff.WriteString("else ")
+		buff.WriteString(" else ")
 		buff.WriteString(ife.Alternative.String())
 	}
 
