@@ -33,7 +33,7 @@ func Eval(node ast.Node) object.Object {
 		case *ast.IfExpression:
 			return evalIfExpression(node)
 		case *ast.ReturnStatement:
-			val := Eval(node)
+			val := Eval(node.ReturnValue)
 			return &object.ReturnValue{Value: val}
 	}
 	return nil
@@ -177,6 +177,7 @@ func evalStatements(statements []ast.Statement) object.Object {
 		if returnValue, ok := result.(*object.ReturnValue); ok {
 			return returnValue.Value
 		}
+	}
 
 	return result
 }	
