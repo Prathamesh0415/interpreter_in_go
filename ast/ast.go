@@ -1,8 +1,9 @@
 package ast
 
 import (
-	"interpreter_go/token"
 	"bytes"
+	"interpreter_go/token"
+	"strings"
 )
 
 
@@ -79,6 +80,12 @@ type IfExpression struct {
 type BlockStatement struct {
 	Token token.Token
 	Statements []Statement
+}
+
+type FunctionLiteral struct {
+	Token token.Token
+	Parameters []*Identifier
+	Body *BlockStatement
 }
 
 func (ls *LetStatement) statementNode() {}
@@ -173,6 +180,25 @@ func (ife *IfExpression) String() string {
 		buff.WriteString(ife.Alternative.String())
 	}
 
+	return buff.String()
+}
+
+
+func (fl *FunctionLiteral) expressionNode() {}
+func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Literal }
+func (fl *FunctionLiteral) String() string {
+	var buff bytes.Buffer
+	params := []string{}
+	
+	for _, p := range fl.Parameters {
+	params = append(params, p.String())
+	}
+	buff.WriteString(fl.TokenLiteral())
+	buff.WriteString("(")
+	buff.WriteString(strings.Join(params, ", "))
+	buff.WriteString(") ")
+	buff.WriteString(fl.Body.String())
+	
 	return buff.String()
 }
 
