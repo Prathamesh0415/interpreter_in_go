@@ -2,11 +2,13 @@ package object
 
 import (
 	"fmt"
+
 )
 
 const (
 	INTEGER_OBJ = "INTEGER"
 	BOOLEAN_OBJ = "BOOLEAN"
+	ERROR_OBJ = "ERROR"
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
 	NULL_OBJ = "NULL"
 )
@@ -28,6 +30,10 @@ type Boolean struct {
 
 type ReturnValue struct {
 	Value Object
+}
+
+type Error struct {
+	Message string
 }
 
 type Null struct {}
@@ -63,3 +69,12 @@ func (r *ReturnValue) Type() ObjectType {
 func (r *ReturnValue) Inspect() string {
 	return r.Value.Inspect()
 }
+
+func (e *Error) Type() ObjectType {
+	return ERROR_OBJ
+}
+
+func (e *Error) Inspect() string {
+	return "ERROR: " + e.Message
+}
+
