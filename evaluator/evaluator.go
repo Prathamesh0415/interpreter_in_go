@@ -141,8 +141,10 @@ func evalBlockStatement(block *ast.BlockStatement, env *object.Environment) obje
 	var result object.Object
 	for _, statement := range block.Statements {
 		result = Eval(statement, env)
-		if result != nil && result.Type() == object.ERROR_OBJ || result.Type() == object.RETURN_VALUE_OBJ {
-			return result	
+		if result != nil {
+			if result.Type() == object.ERROR_OBJ || result.Type() == object.RETURN_VALUE_OBJ {
+				return result
+			}	
 		}
 	}
 	return result 

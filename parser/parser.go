@@ -152,12 +152,12 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.currToken.Type {
-	case token.LET:
-		return p.parseLetStatement()
-	case token.RETURN:
-		return p.parseReturnStatement()
-	default:
-		return p.parseExpressionStatement()
+		case token.LET:
+			return p.parseLetStatement()
+		case token.RETURN:
+			return p.parseReturnStatement()
+		default:
+			return p.parseExpressionStatement()
 	}
 }
 
