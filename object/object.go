@@ -2,7 +2,9 @@ package object
 
 import (
 	"fmt"
-
+	"interpreter_go/ast"
+	"bytes"
+	"strings"
 )
 
 const (
@@ -10,6 +12,7 @@ const (
 	BOOLEAN_OBJ = "BOOLEAN"
 	ERROR_OBJ = "ERROR"
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
+	FUNCTION_OBJ = "FUNCTION_OBJ"
 	NULL_OBJ = "NULL"
 )
 
@@ -27,6 +30,13 @@ type Integer struct {
 type Boolean struct {
 	Value bool
 }
+
+type Function struct {
+	Parameters []*ast.Identifier
+	Body *ast.BlockStatement
+	Env *Environment
+}
+
 
 type ReturnValue struct {
 	Value Object
@@ -77,4 +87,24 @@ func (e *Error) Type() ObjectType {
 func (e *Error) Inspect() string {
 	return "ERROR: " + e.Message
 }
+
+func (f *Function) Type() ObjectType {
+	return FUNCTION_OBJ 
+}
+
+func (f *Function) Inspect() string {
+	var buff bytes.Buffer
+	params := []string{}
+	for _, p := range f.Parameters {
+		params = append(params, p.String())
+	}
+	buff.WriteString("fn")
+	buff.WriteString("(")
+	buff.WriteString(strings.Join(params, ", "))
+	buff.WriteString(") {\n")
+	buff.WriteString(f.Body.String())
+	buff.WriteString("\n}")
+	return buff.String()
+}
+
 
