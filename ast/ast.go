@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"interpreter_go/token"
 	"strings"
+	"fmt"
 )
 
 
@@ -255,4 +256,38 @@ func (p *Program) TokenLiteral() string {
 	} else {
 		return ""
 	}
+}
+
+func PrintAST(node Node, indent string) {
+    switch n := node.(type) {
+    case *Program:
+        fmt.Printf("%sProgram:\n", indent)
+        for _, stmt := range n.Statements {
+            PrintAST(stmt, indent+"  ")
+        }
+    case *LetStatement:
+        fmt.Printf("%sLetStatement:\n", indent)
+        fmt.Printf("%s  Name: %s\n", indent, n.Name.Value)
+        fmt.Printf("%s  Value:\n", indent)
+        if n.Value != nil {
+            PrintAST(n.Value, indent+"    ")
+        }
+    case *ExpressionStatement:
+        fmt.Printf("%sExpressionStatement:\n", indent)
+        if n.Expression != nil {
+            PrintAST(n.Expression, indent+"  ")
+        }
+    case *InfixExpression:
+        fmt.Printf("%sInfixExpression (%s):\n", indent, n.Operator)
+        fmt.Printf("%s  Left:\n", indent)
+        PrintAST(n.Left, indent+"    ")
+        fmt.Printf("%s  Right:\n", indent)
+        PrintAST(n.Right, indent+"    ")
+    case *IntegerLiteral:
+        fmt.Printf("%sIntegerLiteral: %d\n", indent, n.Value)
+    case *Identifier:
+        fmt.Printf("%sIdentifier: %s\n", indent, n.Value)
+    default:
+        fmt.Printf("%sUnknown Node: %T\n", indent, n)
+    }
 }

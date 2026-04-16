@@ -7,6 +7,7 @@ import (
 	"interpreter_go/parser"
 	"interpreter_go/lexer"
 	"interpreter_go/evaluator"
+	"interpreter_go/ast"
 	"interpreter_go/object"
 )
 
@@ -25,6 +26,7 @@ func Start(in io.Reader, out io.Writer) {
 		l := lexer.New(line)
 		p := parser.New(l)
 		program := p.ParseProgram()
+		ast.PrintAST(program, "")
 		if len(p.Errors()) != 0 {
 			printParserErrors(out, p.Errors())
 			continue
