@@ -14,10 +14,17 @@ const (
 	ERROR_OBJ = "ERROR"
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
 	FUNCTION_OBJ = "FUNCTION_OBJ"
+	BUILTIN_OBJ = "BUILTIN"
 	NULL_OBJ = "NULL"
 )
 
 type ObjectType string
+
+type BuiltinFunction func(args ...Object) Object
+
+type Builtin struct {
+	Fn BuiltinFunction
+}
 
 type Object interface {
 	Type() ObjectType
@@ -52,6 +59,14 @@ type Error struct {
 }
 
 type Null struct {}
+
+func (b *Builtin) Type() ObjectType {
+	return BUILTIN_OBJ
+}
+
+func(b *Builtin) Inspect() string {
+	return "builtin function"
+}
 
 func (i *Integer) Inspect() string {
 	return fmt.Sprintf("%d", i.Value)
