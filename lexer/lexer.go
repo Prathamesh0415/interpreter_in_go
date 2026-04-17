@@ -59,6 +59,9 @@ func (l *Lexer) NextToken() token.Token {
 			} else {
 				tok = newToken(token.BANG, l.ch)
 			}
+		case '"':
+			tok.Type = Token.STRING
+			tok.Literal = l.readString()
 		case '<': tok = newToken(token.LT, l.ch)
 		case '>': tok = newToken(token.GT, l.ch)
 		case ';': tok = newToken(token.SEMICOLON, l.ch)
@@ -94,6 +97,18 @@ func newToken(ty token.TokenType, ch byte) token.Token {
 		Literal: string(ch),
 	}
 }
+
+func (l *Lexer) readString() string {
+	position := l.position + 1;
+	for {
+		l.readChar()
+		if l.ch == '"' || l.ch == 0 {
+			break
+		}
+	}
+	return l.input[position:l.position]
+}
+
 
 func (l *Lexer) readIdentifier() string {
 	position := l.position

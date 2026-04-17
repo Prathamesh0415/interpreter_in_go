@@ -7,6 +7,7 @@ const (
 
 	IDENT = "IDENT" // variables
 	INT = "INT" // integer data type
+	STRING = "STRING"
 
 	// Operators
 	ASSIGN = "="
