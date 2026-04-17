@@ -27,6 +27,11 @@ type Program struct {
 	Statements []Statement
 }
 
+type ArrayLiteral struct {
+	Token token.Token
+	Elements []Expression
+}
+
 type LetStatement struct {
 	Token token.Token
 	Name *Identifier 
@@ -98,6 +103,25 @@ type CallExpression struct {
 	Token token.Token
 	Function Expression
 	Arguments []Expression
+}
+
+func (al *ArrayLiteral) expressionNode() {}
+func (al *ArrayLiteral) TokenLiteral() string { return al.Token.Literal }
+func (al *ArrayLiteral) String() string {
+
+	var buff bytes.Buffer
+
+	eles := []string{}
+
+	for _, ele := range al.Elements {
+		eles = append(eles, ele.String())
+	}
+
+	buff.WriteString("[")
+	buff.WriteString(strings.Join(eles, ","))
+	buff.WriteString("]")
+
+	return buff.String()
 }
 
 func (ls *LetStatement) statementNode() {}
