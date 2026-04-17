@@ -287,7 +287,34 @@ func PrintAST(node Node, indent string) {
         fmt.Printf("%sIntegerLiteral: %d\n", indent, n.Value)
     case *Identifier:
         fmt.Printf("%sIdentifier: %s\n", indent, n.Value)
-    default:
+    case *FunctionLiteral:
+		fmt.Printf("%sFunctionLiteral:\n", indent)
+		fmt.Printf("%s  Parameters:\n", indent)
+		for _, p := range n.Parameters {
+			PrintAST(p, indent+"    ") 
+		}
+		fmt.Printf("%s  Body:\n", indent)
+		PrintAST(n.Body, indent+"    ")
+
+	case *BlockStatement:
+		fmt.Printf("%sBlockStatement:\n", indent)
+		for _, stmt := range n.Statements {
+			PrintAST(stmt, indent+"  ") 
+		}
+	case *CallExpression:
+		fmt.Printf("%sCallExpression:\n", indent)
+		fmt.Printf("%s  Function:\n", indent)
+		PrintAST(n.Function, indent+"    ")
+		
+		if len(n.Arguments) > 0 {
+			fmt.Printf("%s  Arguments:\n", indent)
+			for _, arg := range n.Arguments {
+				PrintAST(arg, indent+"    ")
+			}
+		} else {
+			fmt.Printf("%s  Arguments: (none)\n", indent)
+		}
+	default:
         fmt.Printf("%sUnknown Node: %T\n", indent, n)
     }
 }
