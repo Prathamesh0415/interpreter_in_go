@@ -105,6 +105,26 @@ type CallExpression struct {
 	Arguments []Expression
 }
 
+type IndexExpression struct {
+	Token token.Token
+	Left Expression
+	Index Expression
+}
+
+func (ie *IndexExpression) expressionNode() {}
+func (ie *IndexExpression) TokenLiteral() string { return ie.Token.Literal}
+func (ie *IndexExpression) String() string {
+	var buff bytes.Buffer
+
+	buff.WriteString("(")
+	buff.WriteString(ie.Left.String())
+	buff.WriteString("[")
+	buff.WriteString(ie.Index.String())
+	buff.WriteString("])")
+
+	return buff.String()
+}
+
 func (al *ArrayLiteral) expressionNode() {}
 func (al *ArrayLiteral) TokenLiteral() string { return al.Token.Literal }
 func (al *ArrayLiteral) String() string {
