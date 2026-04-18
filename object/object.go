@@ -16,6 +16,7 @@ const (
 	FUNCTION_OBJ = "FUNCTION_OBJ"
 	BUILTIN_OBJ = "BUILTIN"
 	NULL_OBJ = "NULL"
+	ARRAY_OBJ = "ARRAY"
 )
 
 type ObjectType string
@@ -54,11 +55,34 @@ type ReturnValue struct {
 	Value Object
 }
 
+type Array struct {
+	Elements []Object
+}
+
 type Error struct {
 	Message string
 }
 
 type Null struct {}
+
+func (a *Array) Type() ObjectType {
+	return ARRAY_OBJ
+}
+
+func (a *Array) Inspect() string {
+	var buff bytes.Buffer
+
+	elements := []string{}
+
+	for _, ele := range a.Elements {
+		elements = append(elements, ele.Inspect())
+	}
+	buff.WriteString("[")
+	buff.WriteString(strings.Join(elements, ","))
+	buff.WriteString("]")
+
+	return buff.String()
+}
 
 func (b *Builtin) Type() ObjectType {
 	return BUILTIN_OBJ
