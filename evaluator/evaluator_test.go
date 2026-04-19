@@ -123,50 +123,54 @@ func TestErrorHandling(t *testing.T) {
 		input string
 		expectedMessage string
 	}{
-	{
-		"5 + true;",	
-		"type mismatch: INTEGER + BOOLEAN",
-	},
-	{
-		"5 + true; 5;",
-		"type mismatch: INTEGER + BOOLEAN",
-	},
-	{
-		"-true",
-		"unknown operator:-BOOLEAN",
-	},
-	{
-		"true + false;",
-		"unknown operator: BOOLEAN + BOOLEAN",
-	},
-	{
-		"5; true + false; 5",
-		"unknown operator: BOOLEAN + BOOLEAN",
-	},
-	{
-		"if (10 > 1) { true + false; }",
-		"unknown operator: BOOLEAN + BOOLEAN",
-	},
-	{
-		`
-		132
-		if (10 > 1) {
-		if (10 > 1) {
-		return true + false;
-		}
-		return 1;
-		}
-	`,
-		"unknown operator: BOOLEAN + BOOLEAN",
-	},
-	{
-		"foobar",
-		"identifier not found: foobar",
-	},
-	{
-		`"Hello"- "World"`,
-		"unknown operator: STRING - STRING",
-	},
+		{
+			"5 + true;",	
+			"type mismatch: INTEGER + BOOLEAN",
+		},
+		{
+			"5 + true; 5;",
+			"type mismatch: INTEGER + BOOLEAN",
+		},
+		{
+			"-true",
+			"unknown operator:-BOOLEAN",
+		},
+		{
+			"true + false;",
+			"unknown operator: BOOLEAN + BOOLEAN",
+		},
+		{
+			"5; true + false; 5",
+			"unknown operator: BOOLEAN + BOOLEAN",
+		},
+		{
+			"if (10 > 1) { true + false; }",
+			"unknown operator: BOOLEAN + BOOLEAN",
+		},
+		{
+			`
+			132
+			if (10 > 1) {
+			if (10 > 1) {
+			return true + false;
+			}
+			return 1;
+			}
+		`,
+			"unknown operator: BOOLEAN + BOOLEAN",
+		},
+		{
+			"foobar",
+			"identifier not found: foobar",
+		},
+		{
+			`"Hello"- "World"`,
+			"unknown operator: STRING - STRING",
+		},
+		{
+			`{"name": "Monkey"}[fn(x) { x }];`,
+			"unusable as hash key: FUNCTION_OBJ",
+		},
 	}
 
 	for _, tt := range tests {
@@ -401,6 +405,52 @@ func TestHashLiterals(t *testing.T) {
 			t.Errorf("no pair for given key in Pairs")
 		}
 		testIntegerObject(t, pair.Value, expectedValue)
+	}
+}
+
+func TestHashIndexExpressions(t *testing.T) {
+tests := []struct {
+		input string
+		expected interface{}
+	}{
+	{
+		`{"foo": 5}["foo"]`,
+		5,
+	},
+	{
+		`{"foo": 5}["bar"]`,
+		nil,
+	},
+	{
+		`let key = "foo"; {"foo": 5}[key]`,
+		5,
+	},
+	{
+		`{}["foo"]`,
+		nil,
+	},
+	{
+		`{5: 5}[5]`,
+		5,
+	},
+	{
+		`{true: 5}[true]`,
+		5,
+	},
+	{
+		`{false: 5}[false]`,
+		5,
+	},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		integer, ok := tt.expected.(int)
+		if ok {
+			testIntegerObject(t, evaluated, int64(integer))
+		} else {
+			testNullObject(t, evaluated)
+		}
 	}
 }
 
