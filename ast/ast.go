@@ -312,81 +312,99 @@ func (p *Program) TokenLiteral() string {
 }
 
 func PrintAST(node Node, indent string) {
-	switch n := node.(type) {
-	case *Program:
-		fmt.Printf("%sProgram:\n", indent)
-		for _, stmt := range n.Statements {
-			PrintAST(stmt, indent+"  ")
-		}
-	case *LetStatement:
-		fmt.Printf("%sLetStatement:\n", indent)
-		fmt.Printf("%s  Name: %s\n", indent, n.Name.Value)
-		fmt.Printf("%s  Value:\n", indent)
-		if n.Value != nil {
-			PrintAST(n.Value, indent+"    ")
-		}
-	case *ReturnStatement:
-		fmt.Printf("%sReturnStatement:\n", indent)
-		if n.ReturnValue != nil {
-			fmt.Printf("%s  ReturnValue:\n", indent)
-			PrintAST(n.ReturnValue, indent+"    ")
-		}
-	case *ExpressionStatement:
-		fmt.Printf("%sExpressionStatement:\n", indent)
-		if n.Expression != nil {
-			PrintAST(n.Expression, indent+"  ")
-		}
-	case *InfixExpression:
-		fmt.Printf("%sInfixExpression (%s):\n", indent, n.Operator)
-		fmt.Printf("%s  Left:\n", indent)
-		PrintAST(n.Left, indent+"    ")
-		fmt.Printf("%s  Right:\n", indent)
-		PrintAST(n.Right, indent+"    ")
-	case *IntegerLiteral:
-		fmt.Printf("%sIntegerLiteral: %d\n", indent, n.Value)
-	case *Identifier:
-		fmt.Printf("%sIdentifier: %s\n", indent, n.Value)
-	case *Boolean:
-		fmt.Printf("%sBoolean: %t\n", indent, n.Value)
-	case *IfExpression:
-		fmt.Printf("%sIfExpression:\n", indent)
-		fmt.Printf("%s  Condition:\n", indent)
-		PrintAST(n.Condition, indent+"    ")
-		
-		fmt.Printf("%s  Consequence:\n", indent)
-		PrintAST(n.Consequence, indent+"    ")
-		
-		if n.Alternative != nil {
-			fmt.Printf("%s  Alternative:\n", indent)
-			PrintAST(n.Alternative, indent+"    ")
-		}
-	case *FunctionLiteral:
-		fmt.Printf("%sFunctionLiteral:\n", indent)
-		fmt.Printf("%s  Parameters:\n", indent)
-		for _, p := range n.Parameters {
-			PrintAST(p, indent+"    ")
-		}
-		fmt.Printf("%s  Body:\n", indent)
-		PrintAST(n.Body, indent+"    ")
-	case *BlockStatement:
-		fmt.Printf("%sBlockStatement:\n", indent)
-		for _, stmt := range n.Statements {
-			PrintAST(stmt, indent+"  ")
-		}
-	case *CallExpression:
-		fmt.Printf("%sCallExpression:\n", indent)
-		fmt.Printf("%s  Function:\n", indent)
-		PrintAST(n.Function, indent+"    ")
+    switch n := node.(type) {
+    case *Program:
+        fmt.Printf("%sProgram:\n", indent)
+        for _, stmt := range n.Statements {
+            PrintAST(stmt, indent+"  ")
+        }
+    case *LetStatement:
+        fmt.Printf("%sLetStatement:\n", indent)
+        fmt.Printf("%s  Name: %s\n", indent, n.Name.Value)
+        fmt.Printf("%s  Value:\n", indent)
+        if n.Value != nil {
+            PrintAST(n.Value, indent+"    ")
+        }
+    case *ReturnStatement:
+        fmt.Printf("%sReturnStatement:\n", indent)
+        if n.ReturnValue != nil {
+            fmt.Printf("%s  ReturnValue:\n", indent)
+            PrintAST(n.ReturnValue, indent+"    ")
+        }
+    case *ExpressionStatement:
+        fmt.Printf("%sExpressionStatement:\n", indent)
+        if n.Expression != nil {
+            PrintAST(n.Expression, indent+"  ")
+        }
+    case *InfixExpression:
+        fmt.Printf("%sInfixExpression (%s):\n", indent, n.Operator)
+        fmt.Printf("%s  Left:\n", indent)
+        PrintAST(n.Left, indent+"    ")
+        fmt.Printf("%s  Right:\n", indent)
+        PrintAST(n.Right, indent+"    ")
+    case *IntegerLiteral:
+        fmt.Printf("%sIntegerLiteral: %d\n", indent, n.Value)
+    case *StringLiteral:
+        fmt.Printf("%sStringLiteral: %s\n", indent, n.Value)
+    case *Identifier:
+        fmt.Printf("%sIdentifier: %s\n", indent, n.Value)
+    case *Boolean:
+        fmt.Printf("%sBoolean: %t\n", indent, n.Value)
+    case *IfExpression:
+        fmt.Printf("%sIfExpression:\n", indent)
+        fmt.Printf("%s  Condition:\n", indent)
+        PrintAST(n.Condition, indent+"    ")
+        
+        fmt.Printf("%s  Consequence:\n", indent)
+        PrintAST(n.Consequence, indent+"    ")
+        
+        if n.Alternative != nil {
+            fmt.Printf("%s  Alternative:\n", indent)
+            PrintAST(n.Alternative, indent+"    ")
+        }
+    case *FunctionLiteral:
+        fmt.Printf("%sFunctionLiteral:\n", indent)
+        fmt.Printf("%s  Parameters:\n", indent)
+        for _, p := range n.Parameters {
+            PrintAST(p, indent+"    ")
+        }
+        fmt.Printf("%s  Body:\n", indent)
+        PrintAST(n.Body, indent+"    ")
+    case *BlockStatement:
+        fmt.Printf("%sBlockStatement:\n", indent)
+        for _, stmt := range n.Statements {
+            PrintAST(stmt, indent+"  ")
+        }
+    case *CallExpression:
+        fmt.Printf("%sCallExpression:\n", indent)
+        fmt.Printf("%s  Function:\n", indent)
+        PrintAST(n.Function, indent+"    ")
 
-		if len(n.Arguments) > 0 {
-			fmt.Printf("%s  Arguments:\n", indent)
-			for _, arg := range n.Arguments {
-				PrintAST(arg, indent+"    ")
-			}
-		} else {
-			fmt.Printf("%s  Arguments: (none)\n", indent)
-		}
-	default:
-		fmt.Printf("%sUnknown Node: %T\n", indent, n)
-	}
+        if len(n.Arguments) > 0 {
+            fmt.Printf("%s  Arguments:\n", indent)
+            for _, arg := range n.Arguments {
+                PrintAST(arg, indent+"    ")
+            }
+        } else {
+            fmt.Printf("%s  Arguments: (none)\n", indent)
+        }
+    case *ArrayLiteral:
+        fmt.Printf("%sArrayLiteral:\n", indent)
+        if len(n.Elements) > 0 {
+            fmt.Printf("%s  Elements:\n", indent)
+            for _, el := range n.Elements {
+                PrintAST(el, indent+"    ")
+            }
+        } else {
+            fmt.Printf("%s  Elements: (empty)\n", indent)
+        }
+    case *IndexExpression:
+        fmt.Printf("%sIndexExpression:\n", indent)
+        fmt.Printf("%s  Left:\n", indent)
+        PrintAST(n.Left, indent+"    ")
+        fmt.Printf("%s  Index:\n", indent)
+        PrintAST(n.Index, indent+"    ")
+    default:
+        fmt.Printf("%sUnknown Node: %T\n", indent, n)
+    }
 }

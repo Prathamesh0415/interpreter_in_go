@@ -87,7 +87,7 @@ func New(lex *lexer.Lexer) *Parser {
 func (p *Parser) nextToken() {
 	p.currToken = p.peekToken
 	p.peekToken = p.l.NextToken()
-	//fmt.Printf("%s\n", p.peekToken)
+	fmt.Printf("%s\n", p.peekToken)
 }
 
 func (p *Parser) ParseProgram() *ast.Program {
