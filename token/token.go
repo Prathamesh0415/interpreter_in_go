@@ -23,6 +23,7 @@ const (
 	NOT_EQ = "!="
 
 	//Delimiters
+	COLON = ":"
 	COMMA = ","
 	SEMICOLON = ";"
 
